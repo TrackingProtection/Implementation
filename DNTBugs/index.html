@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>DNT enhanced OOBC & Transparency</title>
+    <title>DNT 1.1</title>
     <meta charset='utf-8'>
     <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
             async class='remove'></script>
@@ -16,6 +16,12 @@
           url: "https://uk.linkedin.com/in/mikeoneill1",
           company: "Baycloud Systems",
           companyURL: "https://baycloud.com/"
+      },
+      {
+          name: "Rob van Eijk",
+          url: "https://nl.linkedin.com/in/rvaneijk88",
+          company: "Leiden University",
+          companyURL: "https://www.universiteitleiden.nl/en"
       }
           ],
           wg:           "W3C Tracking Protection Working Group",
@@ -28,7 +34,8 @@
 <body>
     <section id='abstract'>
         <p>
-            Some suggestions for improvements to the TPE, to help increase transparency for users and make implementation easier.
+            Some suggestions for improvements to the TPE, to help increase transparency and make implementation easier. This is based on building the Chrome and Firefox browser extension Bouncer, which implements the full Javascript API,
+            together with experience creating user consent systems based on the API on European ePrivacy compliant websites.
         </p>
     </section>
 
@@ -49,19 +56,33 @@
             Sites and third-party servers are not likely to implement DNT (either the W3C TCS or the EFF flavour) unless there is a scalable way to override
             the DNT general preference on particular domains i.e. to whitelist them.
             Moreover, the TCS scope section specifically requires browser support for the JavaScript Exceptions or Consent API.
-            Microsoft, and the <a href="//baycloud.com/bouncerDownload" target="_blank">Bouncer</a> extension has proved the API is implementable,
-            but there has been no implementation by a high-throughput site like a publisher or third-party advertiser.
+            The API has proven to be implementable in browsers and browser extensions,
+            but there has been no use of it by a high profile site such as a publisher or third-party advertiser.
             Until the API is more widely supported the out-of-band mechanism is the only way for domains to be white-listed, but it suffers from a lack of verifiability and transparency.
         </p>
         <p>
-            An enhanced requirement for transparency is built into the new Privacy Shield principles and the GDPR.
-            This is best met with facilities in browsers, or browser extensions, to present information clearly,
-            relying in turn on it being available in a standardised machine readable way.
-            The Tracking Status Resource is an obvious place for this.
+            There have been a few implementations of the <a href="https://www.w3.org/wiki/Privacy/TPWG/TPE_Implementation_Report" target="_blank">Tracking Status Resource or the <code>Tk</code> response</a>.
+            Moreover there also been very few declarations on the web of one the valid EFF DNT policies at <code>/.well-known/dnt-policy.txt</code>
+        </p>
+        <p>
+            Some sites such as www.w3.org, pixel.piwik.org and gchq.gov.uk have the Tk response header, but with an incorrect value.
+            This could partly to do with lack of clarity,
+            but also points to how difficult for server side code to detect the correct cookie indication of out-of-band consent.
+            Server side code capable of changing HTTP headers is often maintained by a different team, even a different company,
+            than the team responsible for the logic of a web application. A way for the application team to declare the header using a "meta tag" approach could help here,
+            as it has for other APIs such as Content-Security-Policy.
+        </p>
+        <p>
+            The GDPR and the principles laid out in the EU-US Privacy Shield arrangements both call for increased transparency.
+            Embedded third-parties now have to be identified and declare their legal basis and purpose for personal data processing.
+            This requirement is a good fit with facilities in browsers, or browser extensions, to present information clearly,
+            which in turn relies on it being available in a standardised machine readable way.
+            The Tracking Status Resource is perfect mechanism for that, but it would help if this could be declared in a more flexible way.
+
         </p>
 
         <p>
-            This suggested changes are an attempt to address the following issues:
+            This suggested changes are an attempt to address these issues:
             <ul>
                 <li>
                     <h3>DNT:0 header deliverable using  well-known named cookie.</h3>
@@ -99,115 +120,125 @@
         </p>
     </section>
 
-        <section>
-            <h2>Tracking Status Resource in the Tk Response Header field</h2>
-            <p>
-                Organisations often manage very many websites, developed and maintained by disparate agencies and other contracted parties.
-                Logistically it can be difficult to manage the declaration of a common Tracking Status Resource by multiple servers run by these disparate parties,
-                but relatively easy to supply a JavaScript library reference to be inserted in every HTML head-section, as this is a well understood industry practice.
-            </p>
-            <p>
-                While it is possible in the current TPE to target any URI as the declared Tracking Status Resource using a chain of HTTP Redirects,
-                getting all a company's servers to initiate the correct server-side redirection code can be difficult.
-            </p>
-            <p>
-                This proposal calls for the ability to specify the Tracking Status Resource within the value of the <code>Tk</code> response header,
-                and be able to declare any <code>Tk</code> response header in an HRTML <code>head</code> section using a <code>meta</code> tag with
-                the standard <code>http-equiv</code> attribute.
-            </p>
-            <p>
-                If a <code>Tk</code> response header exists the <code>meta</code> tag is ignored. If a Tracking Status Resource exists at <code>{origin server domain}/.well-know/dnt</code>
-                then any TSR component of any <code>Tk</code> response , in a header or in the HTML, is ignored.
-            </p>
-            <p>
-                The new Tk response header is defined formally by the following ABNF
-                <pre class="abnf">
-                <dfn>Tk-field-name</dfn>  = "TK"
-                <dfn>Tk-field-value</dfn> = TSV [ ";" status-id] [ ";" "TSR" URI-reference]
-                <dfn>status-id</dfn> =  1*id-char
-                <dfn>id-char</dfn> =  ALPHA / DIGIT / "_" / "-" / "+" / "=" / "/"
+    <section>
+        <h2>Tracking Status Resource in the Tk Response Header field</h2>
+        <p>
+            Organisations often manage very many websites, developed and maintained by disparate agencies and other contracted parties.
+            Logistically it can be difficult to manage the declaration of a common Tracking Status Resource by multiple servers run by these disparate parties,
+            but relatively easy to supply a JavaScript library reference to be inserted in every HTML head-section, as this is a well understood industry practice.
+        </p>
+        <p>
+            While it is possible in the current TPE to target any URI as the declared Tracking Status Resource using a chain of HTTP Redirects,
+            getting all a company's servers to initiate the correct server-side redirection code can be difficult.
+        </p>
+
+        <p>
+            This proposal calls for the ability to specify the Tracking Status Resource within the value of the <code>Tk</code> response header,
+            and be able to declare any <code>Tk</code> response header in an HTML <code>head</code> section using a <code>meta</code> tag with
+            the standard <code>http-equiv</code> attribute.
+        </p>
+        <p>
+            In future there is likely to be a standardised policy resource for entire origin (e.g web site) where security and policy oriented headers can be declared.
+            The motivation for this is the "header bloat" issue arising from new recommendations such as Content-Security-Policy.
+            It would make sense to append the Tracking Status Resource to this, and incorporating a reference inside a header is a natural way to do it.
+        </p>
+        <p>
+            A valid URI after a "%" character in the <code>Tk</code> header will be construed as a valid Tracking Status Resource, unless a valid resource is also located at <code>{origin server domain}/.well-known/dnt</code>,
+            in whch case that resource is taken as the only valid one.
+        </p>
+        <p>
+            If a <code>Tk</code> response header exists the <code>meta</code> tag is ignored. If a Tracking Status Resource exists at <code>{origin server domain}/.well-known/dnt</code>
+            then any "%" component of any <code>Tk</code> response , in a header or in the HTML, is ignored.
+        </p>
+        <p>
+            The new Tk response header is defined formally by the following ABNF
+            <pre class="abnf">
+            <dfn>Tk-field-name</dfn>  = "TK"
+            <dfn>Tk-field-value</dfn> = TSV [ ";" status-id] [ "%" URI-reference]
+            <dfn>status-id</dfn> =  1*id-char
+            <dfn>id-char</dfn> =  ALPHA / DIGIT / "_" / "-" / "+" / "=" / "/"
             URI-reference is defined as per [[RFC3986]]
          </pre>
-            </p>
-            <h3>Tk response header via meta tag </h3>
-            <p>
-                The server MAY supply a Tk response via an HTML <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> elements
-                with <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-http-equiv">http-equiv</a></code> attributes that are an <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#ascii-case-insensitive">
-                    ASCII case-insensitive
-                    match
-                </a> for the string "<code>Tk</code>". For
-                example:
-            </p>
+        </p>
+        <h3>Tk response header via meta tag </h3>
+        <p>
+            The server MAY supply a Tk response via an HTML <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> elements
+            with <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-http-equiv">http-equiv</a></code> attributes that are an <a data-link-type="dfn" href="http://www.w3.org/TR/html5/infrastructure.html#ascii-case-insensitive">
+                ASCII case-insensitive
+                match
+            </a> for the string "<code>Tk</code>". For
+            example:
+        </p>
 
 
-            <pre class="example" id="example-ff79af85"><a class="self-link" href="#example-ff79af85"></a>&lt;meta http-equiv="Tk" content="N">
+        <pre class="example" id="example-ff79af85"><a class="self-link" href="#example-ff79af85"></a>&lt;meta http-equiv="Tk" content="N">
 </pre>
-            <pre class="example" id="example-ff79af86"><a class="self-link" href="#example-ff79af86"></a>&lt;meta http-equiv="Tk" content="C;TSR https://corporate-site.com/.well-known/dnt">
+        <pre class="example" id="example-ff79af86"><a class="self-link" href="#example-ff79af86"></a>&lt;meta http-equiv="Tk" content="C%https://corporate-site.com/.well-known/dnt">
 </pre>
 
-            <p>
-                Add the following entry to the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/document-metadata.html#pragma-directives">pragma directives</a> for the <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code>
-                element:
-            </p>
+        <p>
+            Add the following entry to the <a data-link-type="dfn" href="http://www.w3.org/TR/html5/document-metadata.html#pragma-directives">pragma directives</a> for the <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code>
+            element:
+        </p>
 
 
-            <dl>
+        <dl>
 
-                <dt>
-                    Tracking response
-                    (<code>http-equiv="Tk"</code>)
-
-
-
-                <dd>
-
-                    <ol>
-                        <li>
-                            If a Tk response header exists abort these steps.
-                        </li>
-
-                        <li>
-                            If the Document’s <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-head-element">head</a></code> element is not an ancestor of the
-                            <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element, abort these steps.
-                        </li>
-
-
-                        <li>
-                            If the <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element lacks a <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-content">content</a></code> attribute, abort
-                            these steps.
-                        </li>
-
-
-                        <li>
-                            Let <var>trackingResponse</var> be the value of the <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-content">content</a></code>
-                            attribute of the <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element.
-                        </li>
+            <dt>
+                Tracking response
+                (<code>http-equiv="Tk"</code>)
 
 
 
-                    </ol>
+            <dd>
+
+                <ol>
+                    <li>
+                        If a Tk response header exists abort these steps.
+                    </li>
+
+                    <li>
+                        If the Document’s <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-head-element">head</a></code> element is not an ancestor of the
+                        <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element, abort these steps.
+                    </li>
+
+
+                    <li>
+                        If the <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element lacks a <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-content">content</a></code> attribute, abort
+                        these steps.
+                    </li>
+
+
+                    <li>
+                        Let <var>trackingResponse</var> be the value of the <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-content">content</a></code>
+                        attribute of the <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element.
+                    </li>
+
+
+
+                </ol>
 
 
 
 
-            </dl>
+        </dl>
 
 
-            <p>
-                Authors are <em>strongly encouraged</em> to place <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> elements as early
-                in the document as possible, because policies in <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> elements are not
-                applied to content which precedes them.
-            </p>
+        <p>
+            Authors are <em>strongly encouraged</em> to place <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> elements as early
+            in the document as possible, because policies in <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> elements are not
+            applied to content which precedes them.
+        </p>
 
 
-            <p class="note" role="note">
-                Note: Modifications to the <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-content">content</a></code> attribute of a <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element
-                after the element has been parsed will be ignored.
-            </p>
+        <p class="note" role="note">
+            Note: Modifications to the <code><a data-link-type="element-attr" href="http://www.w3.org/TR/html5/document-metadata.html#attr-meta-content">content</a></code> attribute of a <code><a data-link-type="element" href="http://www.w3.org/TR/html5/document-metadata.html#the-meta-element">meta</a></code> element
+            after the element has been parsed will be ignored.
+        </p>
 
 
 
-        </section>
+    </section>
 
     <section>
         <h2>well-known named cookie to indicate consent</h2>
