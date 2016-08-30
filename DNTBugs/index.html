@@ -62,22 +62,23 @@
         </p>
         <p>
             There have been a few implementations of the <a href="https://www.w3.org/wiki/Privacy/TPWG/TPE_Implementation_Report" target="_blank">Tracking Status Resource or the <code>Tk</code> response</a>.
-            Moreover there also been very few declarations on the web of one the valid EFF DNT policies at <code>/.well-known/dnt-policy.txt</code>
+            Moreover there also been very few declarations by sites of one of the valid EFF DNT policies at <code>/.well-known/dnt-policy.txt</code>
         </p>
         <p>
             Some sites such as www.w3.org, pixel.piwik.org and gchq.gov.uk have the Tk response header, but with an incorrect value.
             This could partly to do with lack of clarity,
-            but also points to how difficult for server side code to detect the correct cookie indication of out-of-band consent.
+            but also hints at the problems for server side code detecting (in a scalable way) out-of-band consent using cookies.
             Server side code capable of changing HTTP headers is often maintained by a different team, even a different company,
             than the team responsible for the logic of a web application. A way for the application team to declare the header using a "meta tag" approach could help here,
-            as it has for other APIs such as Content-Security-Policy.
+            as it has for other recommendations such as the Content-Security-Policy header.
         </p>
         <p>
             The GDPR and the principles laid out in the EU-US Privacy Shield arrangements both call for increased transparency.
             Embedded third-parties now have to be identified and declare their legal basis and purpose for personal data processing.
             This requirement is a good fit with facilities in browsers, or browser extensions, to present information clearly,
             which in turn relies on it being available in a standardised machine readable way.
-            The Tracking Status Resource is perfect mechanism for that, but it would help if this could be declared in a more flexible way.
+            The Tracking Status Resource is perfect mechanism for that, but it would help if this could be deployed more flexibly. Giving
+            sites the option to vary the location of the TSR, and to declare it within an HTML document using meta tags would make it easier for sites to deploy it.
 
         </p>
 
@@ -89,7 +90,9 @@
                     Origin specific user consent should be implementable by script libraries when the underlying JavaScript API is not implemented by a particular user-agent.
                     Delivering the protocol elements, e.g. may not be possible in a DNT request header but would be possible as the value of an HTTP cookie
                     with a standardised name. We propose using the cookie name <code>__DNT</code> for this.
-                    This will allow the transparent communication of a user's consent perhaps overriding their general preference not to be tracked.
+                    This will allow the user to override their general preference not to be tracked in a standardised and verifiable way.
+                    Although this would be simple method to replace the web-wide API,
+                    it would not be easy to use it for site-specific consent due to the lack of support for double-keyed cookies.
                 </li>
                 <li>
                     <h3>
@@ -97,7 +100,7 @@
                     </h3>
                     The new <code>confirmTrackingException</code> and enhanced <code>storeSiteSpecificTrackingException</code> MAY return a Promise with a fulfilment value of <code>TrackingStatusObject</code>.
                     This helps the API be more in line with the asynchronous nature of client side JavaScript, and creates callback functionality so web applications can respond dynamically in cases
-                    where the user agent confirms Consent with the user before the Consent Grant is registered, and is conditional on confirmation.
+                    where the user agent confirms Consent with the user before granting DNT:0.
                 </li>
                 <li>
                     <h3>useSameParty to replace cookie type subdomain rules</h3>
@@ -288,7 +291,7 @@ object {
     string policy?;                  //                 '' 
     string config?;                  //                 '' 
     array { object { string name; string uri} } controllerDescription; // Legal name of the data controller and a URI of a page providing the user with information about it;
-    array { object { string domain; string commitment? ["T", "N"] } } otherParties?; // domains and status of contracting parties
+    <!--array { object { string domain; string commitment? ["T", "N"] } } otherParties?; // domains and status of contracting parties-->
     object { long overall_retention?; // A positive number of seconds indicating the overall maximum lifetime of the client storage.
              array object { string type ["C","L","I"]; // storage type C = a cookie, L = localStorage item, I = indexdedDB table, "E" = cache item e.g. ETag 
                             string match; // a regular expression used to match an item of storage when applied to the item name or cookie name and value pair
@@ -316,7 +319,7 @@ object {
                     If the <dfn>controller</dfn> TSR property is present the <code><dfn>url</dfn></code> property need not be. If the <code><dfn>url</dfn></code> property is present it overrides the value of any TSR <dfn>controller</dfn> property.
                 </p>
             </section>
-            <section id='rep.otherParties'>
+            <!--<section id='rep.otherParties'>
                 <h4>otherParties</h4>
                 <p>
                     An origin server MAY send a property named <code><dfn>otherParties</dfn></code> containing an array of objects representing embedded or contracted third-parties.
@@ -331,7 +334,7 @@ object {
                     with a reference back to the declaring origin server's authority.
                     This enables the user agent to confirm that the contracting parties are mutually aware.
                 </p>
-            </section>
+            </section>-->
             <section>
                 <h2>qualifiers</h2>
                 <p>
@@ -596,7 +599,7 @@ object {
             <h4>optInUri</h4>
             <p>
                 The URI of a resource to communicate a user opt-in (explicit consent) to an origin server. When a user opts-in using a user agent
-                based UI, an HTTP POST MAY be sent to this URI to communicate the change in consent
+                based UI, an HTTP GET MAY be sent to this URI to communicate the change in consent
 
             </p>
 
@@ -605,7 +608,7 @@ object {
             <h4>optOutUri</h4>
             <p>
                 The URI of a resource to communicate a user opt-out (revoked consent) to a server. When a user opts-out using a user agent
-                based UI, or the user agent detects that the Consent Grant has expired, an HTTP POST MAY be sent to this URI to communicate the change in consent.
+                based UI, or the user agent detects that the Consent Grant has expired, an HTTP GET MAY be sent to this URI to communicate the change in consent.
             </p>
 
         </section>
@@ -674,9 +677,9 @@ object {
                                    // if the property is present the first character must be either "0" or "1"
                                    // The user agent will strip any characters after the field value which defaults to "0".
                 DOMString? optIn; // the URI of a resource to communicate a user opt-in (explicit consent) to a server. When a user opts-in using a user agent
-                                  // based UI, an HTTP POST MAY be sent to this URI.
+                                  // based UI, an HTTP GET MAY be sent to this URI.
                 DOMString? optOut; // the URI of a resource to communicate a user opt-out (revoked consent) to a server. When a user opts-out using a user agent
-                                  // based UI, or the user agent detects that the Consent Grant has expired, an HTTP POST MAY be sent to this URI.
+                                  // based UI, or the user agent detects that the Consent Grant has expired, an HTTP GET MAY be sent to this URI.
             };
         </pre>
 
