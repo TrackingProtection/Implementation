@@ -126,24 +126,41 @@
     <section>
         <h2>Tracking Status Resource in the Tk Response Header field</h2>
         <p>
-            Organisations often manage very many websites, developed and maintained by marketing agencies and other contracted parties.
-            Logistically it can be difficult to manage the declaration of a common Tracking Status Resource by multiple servers run by these disparate parties,
-            but relatively easy to supply a JavaScript library reference to be inserted in every HTML head-section, as this is a well understood industry practice.
+            Organisations sometimes have to manage several, perhaps thousands, of websites, often developed and maintained by marketing agencies and other contracted parties.
+            Logistically it can be difficult to manage the multiple servers run by these disparate parties in a coordinated way.
+        </p>
+        <p>
+            An example of where this is required is delivering a Tk response header, especially when the out-of-band consent (OOBC) mechanism must be used.
+            If a user's browser does not support the DNT Exception (Consent) API then the server must determine from the request if tracking consent has been given by that user,
+            before inserting the correct Tk response header. This will in most cases involve looking up the value of an authentication cookie in an external database, and the code to do this would have to reside in the server, and it, or its underlying logic, would have to be shared among the different parties.
+        </p>
+        <p>
+            Another example is the delivery and maintenance of the Tracking Status Resource at the "well known" location.
+            Every origin would have to contain a reference (at <code>/.well-known/dnt</code>) to the current resource, which may have to be maintained by the company's
+            legal or data protection function.
         </p>
         <p>
             While it is possible in the current TPE to target any URI as the declared Tracking Status Resource using a chain of HTTP Redirects,
             getting all a company's servers to initiate the correct server-side redirection code can be difficult.
         </p>
-
+        <p>
+            Both of these issues could be addressed by explicitly allowing the delivery of Tk responses within the returned HTML content, and communicating an alternative TSR URI within the response.
+            It is relatively easy to supply a JavaScript library reference to be inserted in every HTML head-section, and this is a well understood industry practice.
+        </p>
+        <p>
+            This mechanism would only take effect in situations where an origin server did not return a Tk header,
+            and where it did not already return a well formed JSON resource to a GET to <code>/.well-known/dnt</code>.
+        </p>
         <p>
             This proposal calls for the ability to specify the Tracking Status Resource within the value of the <code>Tk</code> response header,
             and be able to declare any <code>Tk</code> response header in an HTML <code>head</code> section using a <code>meta</code> tag with
             the standard <code>http-equiv</code> attribute.
         </p>
         <p>
-            In future there is likely to be a standardised policy resource for entire origin (e.g web site) where security and policy oriented headers can be declared.
-            The motivation for this is the "header bloat" issue arising from new recommendations such as Content-Security-Policy.
+            In future there is likely to be a standardised policy resource for an entire origin (e.g web site) where security and policy oriented headers can be declared.
+            The motivation for this is managing the "header bloat" issue arising from new recommendations such as Content-Security-Policy.
             It would make sense to append the Tracking Status Resource to this, and incorporating a reference inside a header is a natural way to do it.
+            If every site must have a set of cached origin-wide resources it would be best to combine their functionality so only one extra round-trip was needed, and to minimise the size of the cache.
         </p>
         <p>
             A valid URI after a "%" character in the <code>Tk</code> header will be construed as a valid Tracking Status Resource, unless a valid resource is also located at <code>{origin server domain}/.well-known/dnt</code>,
