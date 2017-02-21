@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ADA364D9-9BC8-4E43-923A-E083C06A9FC3}</ProjectGuid>
+    <ProjectGuid>{EB17EE4D-FD15-4AEF-8A16-0D31E5236444}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DNTGuide</RootNamespace>
@@ -80,10 +80,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-
-    <Content Include="DNTChange.html" />
-    <Content Include="TSRchanges.html" />
-    <Content Include="sitespecificattributes.html" />
     <Content Include="index.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

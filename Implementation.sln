@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNTBugs", "DNTBugs\DNTBugs.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNTNewFeatures", "DNTNewFeatures\DNTNewFeatures.csproj", "{ADA364D9-9BC8-4E43-923A-E083C06A9FC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNTAPI", "DNTAPI\DNTAPI.csproj", "{EB17EE4D-FD15-4AEF-8A16-0D31E5236444}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{ADA364D9-9BC8-4E43-923A-E083C06A9FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADA364D9-9BC8-4E43-923A-E083C06A9FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADA364D9-9BC8-4E43-923A-E083C06A9FC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB17EE4D-FD15-4AEF-8A16-0D31E5236444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB17EE4D-FD15-4AEF-8A16-0D31E5236444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB17EE4D-FD15-4AEF-8A16-0D31E5236444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB17EE4D-FD15-4AEF-8A16-0D31E5236444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
