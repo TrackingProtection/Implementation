@@ -112,7 +112,7 @@ object {
         <section id='rep.otherParties'>
             <h4>otherParties</h4>
             <p>
-                An origin server MAY send a property named <code><dfn>otherParties</dfn></code> containing an array of objects representing embedded or contracted third-parties.
+                An origin server MAY send a property named <code><dfn>otherParties</dfn></code> containing an array of objects representing embedded third-parties that are either acting as contracted data processors for one or more of the data controllers or are known not to access client data.
                 Each object contains a string <code><dfn>domain</dfn></code> indicating the URI authority name of an embedded or contracted third-party <dfn>target</dfn> along with a status value of either "P" or "N".
                 If a party can receive personal data and has contracted with the origin server as a Data Processor the status will be "P".
                 If the party is known not to receive personal data from the interaction the status will be "N".
@@ -245,27 +245,7 @@ object {
             </p>
 
         </section>
-        <section id='rep.trackingIdConstraint'>
-            <h4>trackingIdConstraint</h4>
-            <p>
-                An origin server MAY send a property named <code><dfn>trackingIdConstraint</dfn></code> containing an object denoting constraints on the <dfn>DNT-identifier</dfn>
-                or <dfn>DNT-audience</dfn> signal.
-                The object contains the integer property <code><dfn>maxAge</dfn></code> indicating the maximum number of seconds any requested <dfn>DNT-identifier</dfn>
-                or <dfn>DNT-audience</dfn> is persisted. It can also contain the integer property <code><dfn>bitLength</dfn></code>
-                denoting the maximum length of a <dfn>DNT-identifier</dfn> bit string.
 
-            </p>
-        </section>
-        <section id='rep.currentAudienceSelector'>
-            <h4>currentAudienceSelector</h4>
-            <p>
-                An origin server MAY send a property named <code><dfn>currentAudienceSelector</dfn></code> containing an array of audience categories
-                the origin server is deriving from the current value of the <dfn>DNT-identifier</dfn> bit string.
-                The <dfn>DNT-identifier</dfn> will be present in the DNT header in the request returning the Tracking Status Resource, if it has been
-                enabled with a previous call to the API, and the exception is still extant.
-            </p>
-
-        </section>
     </section>
 
 
