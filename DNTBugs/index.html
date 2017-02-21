@@ -309,6 +309,16 @@ object {
     array { string; } audit?;        //                 '' 
     string policy?;                  //                 '' 
     string config?;                  //                 '' 
+    array { object { string name; string uri} } controllerDescription; // Legal name of the data controller and a URI of a page providing the user with information about it;
+    <!--array { object { string domain; string commitment? ["T", "N"] } } otherParties?; // domains and status of contracting parties-->
+    object { long overall_retention?; // A positive number of seconds indicating the overall maximum lifetime of the client storage.
+             array object { string type ["C","L","I"]; // storage type C = a cookie, L = localStorage item, I = indexdedDB table, "E" = cache item e.g. ETag 
+                            string match; // a regular expression used to match an item of storage when applied to the item name or cookie name and value pair
+                            array { string ["n","t","i","f","a","u","O","!f","!l","!s","!d"]* purpose;};
+                            array { string sharedWith; }; // the main domains names managed by the entities the data may be shared with.
+                            long retention?; // A positive number of seconds indicating the maximum lifetime of the storage item.
+                          } 
+           } storageUse; // matches any client data item e.g. a cookie, item in localStorage etc., used by the origin server
     string deleteDataUri?; // URI of resource that causes all tracking data on this origin to be deleted
     string optInUri?; // URI of resource that causes the origin server or its JavaScript browsing context to register tracking consent
     string optOutUri?; // URI of resource that causes the origin server or its JavaScript browsing context to revoke any tracking consent
