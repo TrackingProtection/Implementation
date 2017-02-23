@@ -80,8 +80,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-
     <Content Include="DNTChange.html" />
+    <Content Include="controllerspecificconsent.html" />
     <Content Include="TSRchanges.html" />
     <Content Include="sitespecificattributes.html" />
     <Content Include="index.html" />
