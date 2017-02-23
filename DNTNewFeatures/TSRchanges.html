@@ -75,10 +75,10 @@ object {
                      string uri      // URI of a page providing the user with information about it
                    } 
           } controllerDescription;   // object identifying the data controllers (perhaps jointly) responsible for this website;
-    array { object { string domain;  // domain name for an expected resource i.e. of a data processor or an entity assumed not to track
-                     string commitment? ["P", "N"] 
+    array { object { string domain;  // domain name for a known embedded resource i.e. managed by the first-party sites, its data processors or any other entity
+                     string commitment? ["P", "N", "S"] 
                    } 
-          } otherParties?; // other parties acting as data processors or do not process personal data or access private storage
+          } webDomains?; // an object declaring the domains of all the resources (other than the first-party top-level domain) embedded by the site
     object { long overall_retention?; // A positive number of seconds indicating the overall maximum lifetime of all client storage used by this origin.
              array object { string name; // the user readable name for this storage item, e.g. for a cookie this could be the "name" component.
                             string type ["C","L","I","E","O"]; // storage type C = a cookie, L = localStorage item, I = indexdedDB table, "E" = cache item e.g. ETag, "O" = other storage. 
@@ -104,22 +104,18 @@ object {
                 If the <dfn>controller</dfn> TSR property is present the <code><dfn>url</dfn></code> property need not be. If the <code><dfn>url</dfn></code> property is present it overrides the value of any TSR <dfn>controller</dfn> property.
             </p>
         </section>
-        <section id='rep.otherParties'>
-            <h4>otherParties</h4>
+        <section id='rep.webDomains'>
+            <h4>webDomains</h4>
             <p>
-                An origin server MAY send a property named <code><dfn>otherParties</dfn></code> containing an array of objects representing the domains
-                of embedded third-parties that are either acting as contracted data processors for one or more of the data controllers or are known not to access client data.
-                Each object contains a string <code><dfn>domain</dfn></code> indicating the URI authority name of an embedded or contracted third-party <dfn>target</dfn> along with a status value of either "P" or "N".
-                If a party can receive personal data and has contracted with the origin server as a Data Processor the status will be "P".
-                If the party is known not to receive personal data from the interaction the status will be "N".
+                An origin server MAY send a property named <code><dfn>webDomains</dfn></code> containing an array of objects representing the domains
+                of all resources embedded by the origin.
+                Each object contains a string <code><dfn>domain</dfn></code> indicating the URI authority name of an embedded party <dfn>target</dfn> along with an optional status value "code" of either "P", "N" or "S".
+                A code of "P" indicates that the party owning the domain can receive personal data and has contracted with the origin server as a Data Processor.
+                If the party owning the domain is known not to receive personal data from the interaction the code is "N".
+                "S" indicates that the domain is managed by the site owner (i.e. one of the entities indicated in the "controller" array).
+                Each embedded domain should contain a TSR with a "webDomains" property declaring its own expected embedded resources.
                 This information can be used by browsers, browser extensions or script libraries to help protect user privacy by blocking or inhibiting the actions
                 of resources that are not declared by the embedding site.
-            </p>
-            <p>
-                The origin server for each declared domain with a status of "P" must support a Tracking Status Resource
-                also containing an <code><dfn>otherParties</dfn></code> property,
-                with a reference back to the declaring origin server's authority.
-                This enables the user agent to confirm that the contracting parties are mutually aware.
             </p>
         </section>
         <section id='rep.declaredData'>
