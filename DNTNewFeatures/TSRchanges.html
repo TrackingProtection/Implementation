@@ -71,10 +71,19 @@ object {
     array { string; } audit?;        //                 '' 
     string policy?;                  //                 '' 
     string config?;                  //                 '' 
-    array { object { string name;    // Legal name of the data controller
-                     string uri      // URI of a page providing the user with information about it
+    array { object { string name;               // Legal name of the data controller
+                     string address;            // postal address of head office of controller
+                     string email;              // email address for main contact
+                     string tel:               // main telephone number for controller
+                     object {
+                                name;           // name of person primarily responsible for data protection or privacy issues
+                                address;        // postal address of this person
+                                email;          // contact email address of this person
+                                tel:            // contact telephone number of this person;
+                            } DPO;              // details of primary Data Protection or Privacy Officer
+
                    } 
-          } controllerDescription;   // object identifying the data controllers (perhaps jointly) responsible for this website;
+          } controllerDescription;   // object identifying the data controller(s) (perhaps jointly) responsible for this website;
     array { object { string domain;  // domain name for a known embedded resource i.e. managed by the first-party sites, its data processors or any other entity
                      string commitment? ["P", "N", "S"] 
                    } 
@@ -99,23 +108,59 @@ object {
         <section id='rep.controllerDescription'>
             <h4>controllerDescription</h4>
             <p>
-                An origin server MAY send a property named <code><dfn>controllerDescription</dfn></code> containing an array of objects representing one or more Data Controllers jointly responsible for an origin.
-                Each object contains a string <code><dfn>name</dfn></code> indicating the unique name of the Data Controller entity along with a string <code><dfn>url</dfn></code> containing the URI of a human readable web page describing the entity.
-                If the <dfn>controller</dfn> TSR property is present the <code><dfn>url</dfn></code> property need not be. If the <code><dfn>url</dfn></code> property is present it overrides the value of any TSR <dfn>controller</dfn> property.
+                An origin server MAY send a property named <code><strong>controllerDescription</strong></code> containing an array of objects representing one or more Data Controllers jointly responsible for an origin.
+                If a <code><strong>controllerDescription</strong></code> exists it MUST contain a string property <code><strong>name</strong></code> indicating the legal name of the Data Controller entity.
+                Additional optional properties are: 
+                <ul>
+                    <li>
+                        <code><strong>address</strong></code> 
+                        Address of main or head office of controller.
+                    </li>
+                    <li>
+                        <code><strong>email</strong></code>
+                        The main contact email address of the controller.
+                    </li>
+                    <li>
+                        <code><strong>tel</strong></code>
+                        Main contact telephone number for controller.
+                    </li>
+                    <li><code><strong>DPO</strong></code>
+                    An object containing fields that identify the Data Protection Officer, the person who deals with Data Protection or Privacy issues for the controller
+                        <ul>
+                            <li>
+                                <code><strong>name</strong></code>
+                                Name of Data Protection Officer.
+                            </li>
+                            <li>
+                                <code><strong>address</strong></code>
+                                Address of Data Protection Officer.
+                            </li>
+                            <li>
+                                <code><strong>email</strong></code>
+                                The Data Protection Officer's email address.
+                            </li>
+                            <li>
+                                <code><strong>tel</strong></code>
+                                The Data Protection Officer's telephone number.
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
             </p>
         </section>
         <section id='rep.webDomains'>
             <h4>webDomains</h4>
             <p>
                 An origin server MAY send a property named <code><dfn>webDomains</dfn></code> containing an array of objects representing the domains
-                of all resources embedded by the origin.
+                of all resources that may be embedded by any resouce with this origin.
                 Each object contains a string <code><dfn>domain</dfn></code> indicating the URI authority name of an embedded party <dfn>target</dfn> along with an optional status value "code" of either "P", "N" or "S".
                 A code of "P" indicates that the party owning the domain can receive personal data and has contracted with the origin server as a Data Processor.
                 If the party owning the domain is known not to receive personal data from the interaction the code is "N".
-                "S" indicates that the domain is managed by the site owner (i.e. one of the entities indicated in the "controller" array).
+                "S" indicates that the domain is managed by the site owner (i.e. one of the entities indicated by the "controllerDescription" array).
                 Each embedded domain should contain a TSR with a "webDomains" property declaring its own expected embedded resources.
-                This information can be used by browsers, browser extensions or script libraries to help protect user privacy by blocking or inhibiting the actions
-                of resources that are not declared by the embedding site.
+                This information can be used by browsers, browser extensions or script libraries to help protect user privacy by blocking, inhibiting or managing the actions
+                of resources that are not so declared by the embedding site.
             </p>
         </section>
         <section id='rep.declaredData'>
@@ -130,7 +175,8 @@ object {
                 The object contains a long integer <code><strong>overall_retention</strong></code> a positive number of seconds indicating the maximum lifetime of all the declared data.
                 and an array of objects describing individual storage items controlled by the origin server.
                 Each of these contains a <code><strong>selector</strong></code> string used to match the name or name-value pair of a particular item ,
-                a string <code><strong>type</strong></code> representing the class of storage used where "C" is an HTTP cookie, "L" is local HTML5 storage and "I" is indexedDB.
+                a string <code><strong>type</strong></code> representing the class of storage used where "C" is an HTTP cookie, "L" is local HTML5 storage, "I" is indexedDB,
+                "E" is information stored in the browser cache such as "If-Then-Else/Etag" values, and "O" is any other form of storage.
                 The <code><strong>selector</strong></code> string MAY contains a <code>=</code> character to demarcate between Regex match strings for the name and value of a name-value pair.
                 The purposes for each item is encoded in the <code><strong>purpose</strong></code> array of objects.
                 Each <code><strong>purpose</strong></code> object contains a short purpose identifier <code><strong>code</strong></code> and an option string <code><strong>description</strong></code> further describing the purpose.
@@ -232,7 +278,7 @@ object {
             <h4>deleteDataUri</h4>
             <p>
                 An origin server MAY send a property named <code><dfn>deleteDataUri</dfn></code> indicating the URI (relative to the origin domain) of a resource
-                that will delete any personal data held in the user agent such as identifiers used for non-permitted tracking.
+                that will delete all data held for this origin in the user agent.
 
             </p>
 
