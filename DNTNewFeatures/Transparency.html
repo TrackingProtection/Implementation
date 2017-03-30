@@ -63,7 +63,7 @@
                     Given before data is processed, unless one of the exemptions applies.
                 </li>
                 <li>
-                    Must clearly identify the responsible Data Controller or Controllers.
+                    Must clearly identify the responsible Data Controller or Controllers, and any Data Processors contracted to process personal data on their behalf.
                 </li>
                 <li>
                     Must explain the purpose of the processing or storage use in a clear and intelligible way.
@@ -79,7 +79,7 @@
             Websites can obtain the required information to do this relatively easily, whereas
             user agents can only present information gleaned from the automated examination of responses e.g. limited technical details about cookies and subresources.
             There is no standardised way for user agents alone to impart information that can only be known by an application's developers,
-            such as the identity of the data controller(s), their purposes for data collection and contracted relationships with other parties that may be present.
+            such as the identity of the data controller(s) or of any data processors, their purposes for data collection and contracted relationships with other parties that may be present.
         </p>
 
         <p>
@@ -107,9 +107,9 @@
                 which is hard when all that is available is an unstructured HTML page.
                 Furthermore, the GDPR requires that more detailed information about the Data Controller is provided,
                 for example the contact details of the relevant Data Protection Officer.
-                For these reasons it would be better to provide an object property that can as a minimum supply a company's legal name,
-                but that can also be extended with further fields.
-                These supplementary fields should be offered as non-normative examples.
+                For these reasons it would be better to provide an object property in the TSR that can as a minimum supply a company's legal name,
+                but that can also be extended with further fields, and these supplementary fields should be offered as non-normative examples. The TSR is again the post appropriate place to define these because,
+                in situations where the GDPR applies, other legal bases than consent may be available.
             </li>
             <li>
                 <strong>User Security</strong><br />
@@ -119,51 +119,39 @@
                 Data Controllers can determine if the subresources they embed do not present dangers, or do not enable the collection of personal data.
                 Similarly they know what third-party entities they have
                 contracted with as Data Processors (service providers), which are not allowed to process data on their own behalf.
-                The TSR would be an appropriate place for where these declarations could be made.
+                The TSR would be the appropriate place for where these declarations should be made,
+                because the information is equally valid when consent is not relied upon or registered.
 
             </li>
             <li>
                 <strong>Support for Out-Of-Band Consent</strong>
                 The existing "config" property can be any arbitrary web page,
-                which will diminish the possibilities to support User Control when the Consent API is not supported.
+                which will diminish the possibilities to support User Control is situations where the Consent API is not supported.
                 Some companies now support the self-regulatory Opt-out program by implementing
                 a resource that signals when a user opts-out or revocation of their implied opt-in, causing the deletion of any unique user identifier.
                 There is no standardised way for a user agent or user to determine the Url of this resource, so defining a suitable property in the TSR
-                would improve functionality.
+                would improve functionality and possibilities for future innovation. There would of course be no point in supplying this information to a non-existent Consent API.
 
             </li>
         </ul>
     </p>
 </section>
     <section>
-        <h2>Information to be presented in the TSR</h2>
+        <h2>User agents are already able to act on information presented in the TSR</h2>
         <p>
             A site-wide tracking status resource provides information about the potential tracking behaviour of resources located at that origin server.
             For example, in the current TPE, a user agent might choose to exclude, or perform additional pre-flight verification of,
             requests to other domains that have not been claimed as same-party by the referring site.
         </p>
-
-    </section>
-    <p>
-        A config resource might include the ability to review past data collected, delete some or all of the data, provide additional data (if desired),
-        or opt-in, opt-out, or otherwise modify an out-of-band consent status regarding data collection
-
-        A key advantage of providing the tracking status at a resource separate from the site's normal services is that the status can be accessed and
-        reviewed prior to making use of those services.
-
-        A user agent may check the tracking status for a designated resource by first making a retrieval request for the site-wide tracking status representation,
-        as described above,
-        and then parsing the representation as JSON to extract the status object.
-        If the retrieval is unsuccessful or parsing results in a syntax error,
-        the user agent ought to consider the site to be non-conformant with this protocol.
-
-    </p>
-    <section>
-        <h2>Information to be presented at the time the API is called</h2>
         <p>
-
+            The proposed ePrivacy Regulation will apply to user agent providers ("software providers permitting electronic communications"),
+            where Article 10 requires them to help protect data stored there. In order to accurately recognise this data,
+            and to minimise the need for arbitrary domain blocking and otherwise withdrawal of functionality,
+            the TSR can be a useful conduit for web application declarations about data use.
         </p>
+
     </section>
+
 
     <section id='status-representation-additions'>
         <h3>Tracking Status Representation - Additional Properties</h3>
@@ -239,6 +227,10 @@ object {
                         Main contact telephone number for controller.
                     </li>
                     <li>
+                        <code><strong>about</strong></code>
+                        A URI for a human readable page describing the Data Controller. Equivalent to the existing "controller" property.
+                    </li>
+                    <li>
                         <code><strong>DPO</strong></code>
                         An object containing fields that identify the Data Protection Officer, the person who deals with Data Protection or Privacy issues for the controller
                         <ul>
@@ -271,6 +263,8 @@ object {
                 of all resources that the controller has determined may be embedded by any resource with this origin.
                 Each object contains a string <code><dfn>domain</dfn></code> indicating the URI authority name of an embedded party <dfn>target</dfn>
                 along with an optional status value "code" of either "P", "N" or "S".
+            </p>
+            <p>
                 A code of "P" indicates that the party owning the domain can receive personal data and has contracted with the origin server as a Data Processor.
                 If the party owning the domain is known not to receive personal data from the interaction the code is "N".
                 "S" indicates that the domain is managed by the site owner (i.e. one of the entities indicated by the "controllerDescription" array).
@@ -284,10 +278,15 @@ object {
             <p>
                 This is an object representing user agent storage employed by the origin server for tracking or other purposes.
                 This gives the origin server the ability to transparently describe in a standardised way the overall retention time for client storage
-                and the purpose and retention period for each storage item. User agents MAY present this information
+                and the purpose and retention period for each storage item.
+            </p>
+            <p>
+                User agents MAY present this information
                 to the user, and privacy regulators, audit services etc. will be able use website scanning tools to verify it.
                 In addition Privacy Enhancing Technology components, such as TrackingBlocker or AdBlocker extensions,
                 can make intelligent decisions regarding content blocking or storage removal when enforcing a user's privacy preferences.
+            </p>
+            <p>
                 The object contains a long integer <code><strong>overall_retention</strong></code> a positive number of seconds indicating the maximum lifetime of all the declared data.
                 and an array of objects describing individual storage items controlled by the origin server.
                 Each of these contains a <code><strong>selector</strong></code> string used to match the name or name-value pair of a particular item ,
@@ -298,7 +297,10 @@ object {
                 Each <code><strong>purpose</strong></code> object contains a short purpose identifier <code><strong>code</strong></code> and an option string <code><strong>description</strong></code> further describing the purpose.
                 The <code><strong>code</strong></code> property MUST contain one or more of the following purpose identifiers.
 
-                N.B. Maybe the Qualifiers property should have the same coding.
+                <div class="issue">
+                    N.B. Maybe the Qualifiers property should have the same coding.
+                </div>
+
                 <style>
                     .declaredData td, .declaredData th {
                         vertical-align: top;
@@ -395,7 +397,7 @@ object {
             <p>
                 An origin server MAY send a property named <code><dfn>deleteDataUri</dfn></code> indicating the URI (relative to the origin domain) of a resource
                 that will delete all data held for this origin in the user agent.
-                In many cases this would be the resource many advertiser exchanges use for the AdChoices Opt-out iframe.
+                In many cases this would be the resource advertiser exchanges use for the self-regulatory Opt-out iframe.
 
             </p>
 
