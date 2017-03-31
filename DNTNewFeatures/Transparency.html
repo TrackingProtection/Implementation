@@ -53,23 +53,33 @@
             EU Privacy law requires that access to user agent storage is only allowed if the user has given consent,
             or that the storage is used for a limited set of exempted purposes.
             In addition EU Data Protection law says that personal data cannot be processed unless the purpose for the processing is claimed from the outset to be covered by at least one of 6 legal bases,
-            the first of which being consent. In either case consent must be "freely given, specific, informed and unambiguous".
-        </p>
+            the first of which being consent. In either case consent must be "freely given, specific, informed and unambiguous and based on a user's actions", 
+            and (under the draft ePrivacy Regulation (ePR) proposal), "may be expressed by using the appropriate
+            technical settings of a software application enabling access to the
+            internet", and that "users shall be given the possibility to withdraw
+            their consent at any time".
 
+        </p>
         <p>
             The information to be given to the user must thus be
             <ul>
                 <li>
-                    Given before data is processed, unless one of the exemptions applies.
+                    given before the data is collected or processed;
                 </li>
                 <li>
-                    Must clearly identify the responsible Data Controller or Controllers, and any Data Processors contracted to process personal data on their behalf.
+                    clearly identify the responsible Data Controller or Controllers,
+                    any Data Processors contracted to process personal data on their behalf,
+                    and other recipients or categories of recipients of the personal data (GDPR A.13);
                 </li>
                 <li>
-                    Must explain the purpose of the processing or storage use in a clear and intelligible way.
+                    explain the modalities of collection, and purpose and legal basis of the processing, in a clear and intelligible way; and
                 </li>
+                <li>
+                    explain any measure the end-user of the terminal equipment can take to stop or minimize the collection.
+                </li>
+
             </ul>
-            In addition Data Controllers have a responsibility to ensure that personal data is "processed in a manner that ensures appropriate security of the personal data, including protection against unauthorised or unlawful processing" (GDPR A1.f)
+            In addition Data Controllers have a responsibility to ensure that personal data is "processed in a manner that ensures appropriate security of the personal data, including protection against unauthorised or unlawful processing" (GDPR A.1(f))
             and "in a manner that ensures appropriate security and confidentiality of the personal data, including for preventing unauthorised access to or use of personal data and the equipment used for the processing" (GDPR Recital 39).
             This is directly applicable to the risk of delivery of malware onto user agents, especially when this results from the deliberate insertion of subresource elements within website content.
 
@@ -121,7 +131,6 @@
                 contracted with as Data Processors (service providers), which are not allowed to process data on their own behalf.
                 The TSR would be the appropriate place for where these declarations should be made,
                 because the information is equally valid when consent is not relied upon or registered.
-
             </li>
             <li>
                 <strong>Support for Out-Of-Band Consent</strong>
@@ -270,7 +279,7 @@ object {
                 "S" indicates that the domain is managed by the site owner (i.e. one of the entities indicated by the "controllerDescription" array).
                 Each embedded domain should contain a TSR with a "otherParties" property declaring its own expected embedded resources.
                 This information can be used by browsers, browser extensions or script libraries to help protect user privacy by blocking, inhibiting or managing the actions
-                of resources that are not so declared by the embedding site.
+                of resources that are not so declared by the embedding site. 
             </p>
         </section>
         <section id='rep.declaredData'>
